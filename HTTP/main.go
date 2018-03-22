@@ -19,6 +19,50 @@
  * 	Read POST parameters with r.FormValue("email")
  *
  * SERVING STATIC ASSETS
- *
+ *  To serve static assets like JS, CSS, and images.
+ *  Use the built in http.FileServer and point it to a url path.
+
+    fs := http.FileServer(http.Dir("static/"))
+
+ * Once our file server is in place, point a url path at it, just like we did with the dynamic requests.
+
+    http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+ * ACCEPT CONNECTIONS
+ *  Lastly, the HTTP server needs to listen on a port.
+ *  Go has a built in HTTP server, we can start.
+
+    http.ListenAndServe(":80", nil)
+
+ *  pulling all together
  */
-package HTTP
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func log(a *http.Request) {
+	fmt.Println(a)
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+	log(r)
+	io.WriteString(w, "Hello")
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	log(r)
+	fmt.Fprintf(w, "Benvenuto, alle umili origini.")
+}
+
+func main() {
+	fs := http.FileServer(http.Dir("static/"))
+
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	http.HandleFunc("/", index)
+	http.HandleFunc("/hello", hello)
+	http.ListenAndServe(":8000", nil)
+}
