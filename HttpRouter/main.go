@@ -29,6 +29,34 @@
 		vars["page"]  // => the page slug
 	}
 
+ * ADDITIONAL FEATURES OF GORILLA/MUX
+ * METHODS
+ * Restrict request handlers to specific HTTP methods.
+
+	r.HandleFunc("/books/{title}", CreateBook).Methods("POST")
+	r.HandleFunc("/books/{title}", ReadBook).Methods("GET")
+	r.HandleFunc("/books/{title}", UpdateBook).Methods("PUT")
+	r.HandleFunc("/books/{title}", DeleteBook).Methods("DELETE")
+
+ * HOSTNAMES AND SUBDOMAINS
+ *   Restrict the request handler to specific hostnames or subdomains.
+
+     r.HandleFunc("/books/{title}", BookHandler).Host("www.mybookstore.com")
+
+ * SCHEMES
+ *   Restrict the request handler to http/https.
+
+	 r.HandleFunc("/secure", SecureHandler).Schemes("https")
+	 r.HandleFunc("/insecure", InsecureHandler).Schemes("http")
+
+ * PATH AND PREFIXES & SUBROUTERS
+ *   Restrict the request handler to specific path prefixes.
+
+ 	 bookrouter := r.PathPrefix("/books").Subrouter()
+	 bookrouter.HandleFunc("/", AllBooks)
+	 bookrouter.HandleFunc("/{title}", GetBook)
+
+ *
  */
 package main
 
